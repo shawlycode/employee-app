@@ -1,25 +1,57 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import { Col, Container, Row } from "react-bootstrap";
+import Employees from "./Components/Employees";
+import AddEmployee from "./Components/AddEmployee";
+import "./App.css";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      data: [],
+    };
+  }
+
+  addNewUser = (newData) => {
+    newData.id = Math.random().toString();
+    this.setState({
+      data: [...this.state.data, newData],
+    });
+  };
+  deleteUser = (id) => {
+    let savedUsers = this.state.data.filter((newData) => newData.id !== id);
+    this.setState({ data: savedUsers });
+  };
+  handleEditUser = (updatedUser) => {
+    this.setState({
+      data: this.state.data.map((user) =>
+        user.id === updatedUser.id ? updatedUser : user
+      ),
+    });
+  };
+  render() {
+    return (
+      <>
+        <Container fluid style={{ marginTop: "2rem" }}>
+          <Row>
+            <Col>
+              <AddEmployee addNewData={this.addNewUser} />
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Employees
+                userData={this.state.data}
+                deleteUser={this.deleteUser}
+                editUser={this.handleEditUser}
+              />
+            </Col>
+          </Row>
+        </Container>
+      </>
+    );
+  }
 }
 
 export default App;
